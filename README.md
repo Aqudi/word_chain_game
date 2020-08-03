@@ -1,6 +1,6 @@
-# wordchaingame
+# word_chain_game
 
-A new Flutter word chain game.
+💎 Flutter 끝말 잇기 게임
 
 ## Getting Started
 
