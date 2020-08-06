@@ -12,6 +12,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<String> words = [];
 
+  String inputWord;
+
+  FocusNode _inputFocusNode;
+
   final _scrollController = ScrollController();
   final _formKey = GlobalKey<FormState>();
   final _inputController = TextEditingController();
@@ -20,6 +24,12 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _inputController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _inputFocusNode = FocusNode();
   }
 
   @override
@@ -36,6 +46,7 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.all(16),
               child: (words.isNotEmpty)
                   ? ListView.separated(
+                      reverse: true,
                       physics: AlwaysScrollableScrollPhysics(),
                       controller: _scrollController,
                       itemBuilder: (BuildContext context, int index) {
@@ -73,6 +84,14 @@ class _HomePageState extends State<HomePage> {
       child: Form(
         key: _formKey,
         child: TextFormField(
+          textInputAction: TextInputAction.done,
+          focusNode: _inputFocusNode,
+          onFieldSubmitted: (value) {
+            FocusScope.of(context).requestFocus(_inputFocusNode);
+            if (_formKey.currentState.validate()) {
+              _formKey.currentState.save();
+            }
+          },
           controller: _inputController,
           decoration: InputDecoration(
             labelText: widget.hintLabel,
@@ -93,27 +112,31 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           onSaved: (value) {
-            if (value.isNotEmpty) {
+            if (inputWord.isNotEmpty) {
               setState(() {
-                words.add(value);
+                words.insert(0, inputWord);
               });
-              _scrollController.animateTo(
-                _scrollController.position.maxScrollExtent,
-                curve: Curves.easeOut,
-                duration: const Duration(milliseconds: 300),
-              );
             }
-            _inputController.text = "";
           },
           validator: (value) {
+            inputWord = value;
+            _inputController.clear();
+
             print("validate target: $value");
             String returnString;
+            // 단어 입력 검증
             if (value.isEmpty) {
-              returnString = "단어를 입력해주세요";
+              returnString = "단어를 입력해주세요.";
             } else if (words.isNotEmpty) {
-              String firstChar = words.last.get(words.last.length - 1);
-              if (firstChar != value.get(0)) {
-                returnString = "입력하신 단어는 '$firstChar' 로 시작하지 않습니다.";
+              if (value.length <= 1) {
+                // 단어 길이 검증
+                returnString = "2글자 이상의 단어를 입력해주세요.";
+              } else {
+                // 끝말잇기 규칙 검증
+                String firstChar = words.first.last();
+                if (firstChar != value.first()) {
+                  returnString = "입력하신 단어는 '$firstChar' 로 시작하지 않습니다.";
+                }
               }
             }
             return returnString;
