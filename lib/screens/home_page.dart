@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
             }
           },
           validator: (value) {
-            inputWord = value;
+            inputWord = value.trim();
             _inputController.clear();
 
             print("validate target: $value");
