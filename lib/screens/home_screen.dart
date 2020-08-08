@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wordchaingame/extensions/extensions.dart';
 
-class HomePage extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   final String hintLabel = "질 수 없지! 다음 단어!!";
   final String hintText = "다음 단어를 입력해주세요";
 
@@ -9,10 +9,10 @@ class HomePage extends StatefulWidget {
       new RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%\s-\d]');
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   List<String> words = [];
 
   String inputWord;
