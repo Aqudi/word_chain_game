@@ -5,6 +5,9 @@ class HomePage extends StatefulWidget {
   final String hintLabel = "질 수 없지! 다음 단어!!";
   final String hintText = "다음 단어를 입력해주세요";
 
+  final RegExp checkSpecialChar =
+      new RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%\s-\d]');
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -56,7 +59,9 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                       separatorBuilder: (BuildContext context, int index) {
-                        return const Divider();
+                        return const SizedBox(
+                          height: 16,
+                        );
                       },
                       itemCount: words.length,
                     )
@@ -119,27 +124,34 @@ class _HomePageState extends State<HomePage> {
             }
           },
           validator: (value) {
-            inputWord = value.trim();
-            _inputController.clear();
+            // 공백제거
+            value = value.trim();
 
             print("validate target: $value");
-            String returnString;
+
             // 단어 입력 검증
             if (value.isEmpty) {
-              returnString = "단어를 입력해주세요.";
+              return "단어를 입력해주세요.";
             } else if (words.isNotEmpty) {
               if (value.length <= 1) {
                 // 단어 길이 검증
-                returnString = "2글자 이상의 단어를 입력해주세요.";
+                return "2글자 이상의 단어를 입력해주세요.";
               } else {
+                // 특수문자 검증
+                if (widget.checkSpecialChar.hasMatch(value)) {
+                  return "특수문자, 숫자는 입력 불가합니다";
+                }
                 // 끝말잇기 규칙 검증
                 String firstChar = words.first.last();
                 if (firstChar != value.first()) {
-                  returnString = "입력하신 단어는 '$firstChar' 로 시작하지 않습니다.";
+                  return "입력하신 단어는 '$firstChar' 로 시작하지 않습니다.";
                 }
               }
             }
-            return returnString;
+
+            inputWord = value;
+            _inputController.clear();
+            return null;
           },
         ),
       ),
