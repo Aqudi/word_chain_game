@@ -82,6 +82,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _handleSendWord() {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+    }
+    _inputFocusNode.unfocus();
+    _inputController.clear();
+    _inputFocusNode.requestFocus();
+  }
+
   Widget _buildWordInputForm() {
     return Container(
       padding: EdgeInsets.all(16),
@@ -91,12 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: TextFormField(
           textInputAction: TextInputAction.done,
           focusNode: _inputFocusNode,
-          onFieldSubmitted: (value) {
-            FocusScope.of(context).requestFocus(_inputFocusNode);
-            if (_formKey.currentState.validate()) {
-              _formKey.currentState.save();
-            }
-          },
+          onFieldSubmitted: (value) => _handleSendWord(),
           controller: _inputController,
           decoration: InputDecoration(
             labelText: widget.hintLabel,
@@ -109,11 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Icon(Icons.send),
               ),
-              onTap: () {
-                if (_formKey.currentState.validate()) {
-                  _formKey.currentState.save();
-                }
-              },
+              onTap: () =>_handleSendWord(),
             ),
           ),
           onSaved: (value) {
@@ -148,9 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               }
             }
-
             inputWord = value;
-            _inputController.clear();
             return null;
           },
         ),
