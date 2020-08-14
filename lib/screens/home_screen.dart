@@ -86,9 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
     }
-    _inputFocusNode.unfocus();
     _inputController.clear();
-    _inputFocusNode.requestFocus();
   }
 
   Widget _buildWordInputForm() {
@@ -100,8 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: TextFormField(
           textInputAction: TextInputAction.done,
           focusNode: _inputFocusNode,
-          onFieldSubmitted: (value) => _handleSendWord(),
           controller: _inputController,
+          onEditingComplete: () => _handleSendWord(),
           decoration: InputDecoration(
             labelText: widget.hintLabel,
             border: OutlineInputBorder(),
@@ -113,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Icon(Icons.send),
               ),
-              onTap: () =>_handleSendWord(),
+              onTap: () => _handleSendWord(),
             ),
           ),
           onSaved: (value) {
@@ -123,32 +121,36 @@ class _HomeScreenState extends State<HomeScreen> {
               });
             }
           },
+          onChanged: (value) {
+            inputWord = value.trim();
+          },
           validator: (value) {
             // 공백제거
             value = value.trim();
-
             print("validate target: $value");
 
             // 단어 입력 검증
             if (value.isEmpty) {
               return "단어를 입력해주세요.";
-            } else if (words.isNotEmpty) {
-              if (value.length <= 1) {
-                // 단어 길이 검증
-                return "2글자 이상의 단어를 입력해주세요.";
-              } else {
-                // 특수문자 검증
-                if (widget.checkSpecialChar.hasMatch(value)) {
-                  return "특수문자, 숫자는 입력 불가합니다";
-                }
-                // 끝말잇기 규칙 검증
-                String firstChar = words.first.last();
-                if (firstChar != value.first()) {
-                  return "입력하신 단어는 '$firstChar' 로 시작하지 않습니다.";
-                }
+            }
+
+            // 단어 길이 검증
+            if (value.length <= 1) {
+              return "2글자 이상의 단어를 입력해주세요.";
+            }
+
+            // 특수문자 검증
+            if (widget.checkSpecialChar.hasMatch(value)) {
+              return "특수문자, 숫자는 입력 불가합니다";
+            }
+
+            // 끝말잇기 규칙 검증
+            if (words.isNotEmpty) {
+              String firstChar = words.first.last();
+              if (firstChar != value.first()) {
+                return "입력하신 단어는 '$firstChar' 로 시작하지 않습니다.";
               }
             }
-            inputWord = value;
             return null;
           },
         ),
