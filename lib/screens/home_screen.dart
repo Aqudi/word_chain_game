@@ -1,158 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:wordchaingame/extensions/extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:wordchaingame/constants.dart';
+import 'package:wordchaingame/providers/firebase_auth_provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String hintLabel = "질 수 없지! 다음 단어!!";
-  final String hintText = "다음 단어를 입력해주세요";
-
-  final RegExp checkSpecialChar =
-      new RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%\s-\d]');
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<String> words = [];
-
-  String inputWord;
-
-  FocusNode _inputFocusNode;
-
-  final _scrollController = ScrollController();
-  final _formKey = GlobalKey<FormState>();
-  final _inputController = TextEditingController();
-
-  @override
-  void dispose() {
-    _inputController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _inputFocusNode = FocusNode();
-  }
+  FirebaseAuthProvider _auth;
 
   @override
   Widget build(BuildContext context) {
+    _auth = Provider.of<FirebaseAuthProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("끝-말-잇-기")),
-        automaticallyImplyLeading: true,
-      ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(16),
-              child: (words.isNotEmpty)
-                  ? ListView.separated(
-                      reverse: true,
-                      physics: AlwaysScrollableScrollPhysics(),
-                      controller: _scrollController,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Text(
-                          words[index],
-                          style: TextStyle(color: Colors.black),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(
-                          height: 16,
-                        );
-                      },
-                      itemCount: words.length,
-                    )
-                  : Center(
-                      child: Text(
-                        "게임을 시작하세요",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-            ),
+        title: Text("대기방"),
+          centerTitle: true,
+        actions: <Widget>[
+          FlatButton(
+            child: Text("로그아웃", style: TextStyle(color: Colors.black),),
+            onPressed: () => _auth.signOut(),
           ),
-          _buildWordInputForm(),
+          Text("Hello"),
         ],
       ),
-    );
-  }
-
-  void _handleSendWord() {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-    }
-    _inputController.clear();
-  }
-
-  Widget _buildWordInputForm() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      alignment: Alignment.centerRight,
-      child: Form(
-        key: _formKey,
-        child: TextFormField(
-          textInputAction: TextInputAction.done,
-          focusNode: _inputFocusNode,
-          controller: _inputController,
-          onEditingComplete: () => _handleSendWord(),
-          decoration: InputDecoration(
-            labelText: widget.hintLabel,
-            border: OutlineInputBorder(),
-            hintText: widget.hintText,
-            suffixIcon: GestureDetector(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(Icons.send),
-              ),
-              onTap: () => _handleSendWord(),
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width / 2,
+          child:Material(
+            elevation: 5.0,
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.blueGrey,
+            child: MaterialButton(
+              minWidth: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 5,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              onPressed: () => Navigator.pushNamed(context, gameRoute),
+              child: Text("게임하러가기",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  )),
             ),
           ),
-          onSaved: (value) {
-            if (inputWord.isNotEmpty) {
-              setState(() {
-                words.insert(0, inputWord);
-              });
-            }
-          },
-          onChanged: (value) {
-            inputWord = value.trim();
-          },
-          validator: (value) {
-            // 공백제거
-            value = value.trim();
-            print("validate target: $value");
-
-            // 단어 입력 검증
-            if (value.isEmpty) {
-              return "단어를 입력해주세요.";
-            }
-
-            // 단어 길이 검증
-            if (value.length <= 1) {
-              return "2글자 이상의 단어를 입력해주세요.";
-            }
-
-            // 특수문자 검증
-            if (widget.checkSpecialChar.hasMatch(value)) {
-              return "특수문자, 숫자는 입력 불가합니다";
-            }
-
-            // 끝말잇기 규칙 검증
-            if (words.isNotEmpty) {
-              String firstChar = words.first.last();
-              if (firstChar != value.first()) {
-                return "입력하신 단어는 '$firstChar' 로 시작하지 않습니다.";
-              }
-            }
-            return null;
-          },
         ),
       ),
     );

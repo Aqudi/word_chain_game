@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wordchaingame/providers/firebase_auth_provider.dart';
-import 'package:wordchaingame/screens/home_screen.dart';
 import 'package:wordchaingame/screens/auth_screen.dart';
+import 'package:wordchaingame/screens/home_screen.dart';
 
 class RootScreen extends StatefulWidget {
   @override

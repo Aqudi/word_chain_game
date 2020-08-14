@@ -10,6 +10,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => RootScreen());
       case homeRoute:
         return MaterialPageRoute(builder: (_) => HomeScreen());
+      case gameRoute:
+        return MaterialPageRoute(builder: (_) => GameScreen());
       case authRoute:
         return MaterialPageRoute(builder: (_) => AuthScreen());
       default:
