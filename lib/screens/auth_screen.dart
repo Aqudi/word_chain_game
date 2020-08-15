@@ -59,7 +59,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   isLoginForm ? _buildLoginForm() : _buildSignUpForm()
                 ],
               );
@@ -167,6 +169,9 @@ class _AuthScreenState extends State<AuthScreen> {
         if (!value.contains("@")) {
           return "올바른 이메일을 입력해주세요.";
         }
+        if(value.contains(" ")){
+          return "이메일에 공백이 있습니다.";
+        }
         return null;
       },
     );
@@ -228,7 +233,12 @@ class _AuthScreenState extends State<AuthScreen> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        onPressed: () async => _handleLogin(),
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            _formKey.currentState.save();
+          }
+          _handleLogin();
+        },
         child: Text("Login",
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -247,7 +257,12 @@ class _AuthScreenState extends State<AuthScreen> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        onPressed: () async => _handleSignUp(),
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            _formKey.currentState.save();
+          }
+          _handleSignUp();
+        },
         child: Text("SignUp",
             textAlign: TextAlign.center,
             style: TextStyle(
