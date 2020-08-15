@@ -3,4 +3,5 @@ const String rootRoute = "/";
 const String homeRoute = "/home";
 const String gameRoute = "/game";
 
-const String authRoute = "/auth";
+const String loginRoute = "/login";
+const String signupRoute = "/signUp";

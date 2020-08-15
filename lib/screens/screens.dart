@@ -6,4 +6,5 @@ export 'home_screen.dart';
 export 'game_screen.dart';
 
 // not logged in page
-export 'auth_screen.dart';
+export 'login_screen.dart';
+export 'signup_screen.dart';
