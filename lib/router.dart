@@ -17,9 +17,11 @@ class Router {
       case loginRoute:
         return _buildPageRoute(LoginScreen());
       default:
-        return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(child: Text('No route defined for ${settings.name}')),
+        return _buildPageRoute(
+          Center(
+            child: Text(
+              'No route defined for ${settings.name}',
+            ),
           ),
         );
     }
