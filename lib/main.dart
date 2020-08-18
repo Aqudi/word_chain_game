@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:wordchaingame/constants.dart';
 import 'package:wordchaingame/providers/firebase_auth_provider.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
           create: (context) => FirebaseAuthProvider(),
         )
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Word chain game',
         theme: ThemeData(

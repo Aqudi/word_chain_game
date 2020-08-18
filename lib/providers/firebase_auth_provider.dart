@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class FirebaseAuthProvider with ChangeNotifier {
   FirebaseAuthProvider({auth}) : _auth = auth ?? FirebaseAuth.instance {
@@ -10,7 +11,7 @@ class FirebaseAuthProvider with ChangeNotifier {
   FirebaseUser _user;
 
   FirebaseUser get user => _user;
-  
+
   // 이메일 인증된 계정만 로그인된 걸로 간주
   bool get loggedIn => user != null && user.isEmailVerified;
 
@@ -43,9 +44,12 @@ class FirebaseAuthProvider with ChangeNotifier {
         signOut();
         return true;
       }
+    } on PlatformException catch (e) {
+      print("signUpWithEmailAndPassword : ${e.toString()}");
+      throw e.message;
     } catch (e) {
-      print(e.toString());
-      throw new AuthException(e.code, e.message);
+      print("signUpWithEmailAndPassword : $e");
+      throw e;
     }
     return false;
   }
@@ -62,9 +66,12 @@ class FirebaseAuthProvider with ChangeNotifier {
         user = authResult.user;
         return true;
       }
+    } on PlatformException catch (e) {
+      print("signInWithEmailAndPassword : ${e.toString()}");
+      throw e.message;
     } catch (e) {
-      print(e.toString());
-      throw new AuthException(e.code, e.message);
+      print("signInWithEmailAndPassword : $e");
+      throw e;
     }
     return false;
   }
