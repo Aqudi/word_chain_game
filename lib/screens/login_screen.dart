@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:wordchaingame/constants.dart';
 import 'package:wordchaingame/providers/firebase_auth_provider.dart';
+import 'package:wordchaingame/utils/utils.dart';
 import 'package:wordchaingame/validator.dart';
 import 'package:wordchaingame/widgets/auth/base_auth_button.dart';
 import 'package:wordchaingame/widgets/auth/base_auth_textfield.dart';
@@ -20,6 +21,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -81,6 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
             hintText: "exmaple@example.com",
             controller: _emailController,
             validator: Validator.validateEmail,
+            focusNode: _emailFocusNode,
+            onFieldSubmitted: (_) => FieldUtils.fieldFocusChange(
+                context, _emailFocusNode, _passwordFocusNode),
           ),
           widget.betweenFieldSizedBox,
           BaseAuthTextField(
@@ -91,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
             hintText: "password",
             controller: _passwordController,
             validator: Validator.validatePassword,
+            focusNode: _passwordFocusNode,
             onEditingComplete: () async => await _handleLogin(),
           ),
           widget.betweenFieldSizedBox,

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:wordchaingame/validator.dart';
 
 class BaseAuthTextField extends StatelessWidget {
-  final TextStyle textStyle;
   final TextEditingController controller;
+  final FocusNode focusNode;
+
+  final TextStyle textStyle;
   final TextInputAction textInputAction;
   final TextInputType keyboardType;
+
   final bool obscureText;
   final String hintText;
   final Icon prefixIcon;
-  final Function validator;
-  final Function onEditingComplete;
+
+  final FormFieldValidator<String> validator;
+  final VoidCallback onEditingComplete;
+  final ValueChanged<String> onFieldSubmitted;
 
   const BaseAuthTextField({
     Key key,
@@ -23,6 +27,8 @@ class BaseAuthTextField extends StatelessWidget {
     this.onEditingComplete,
     this.keyboardType,
     this.obscureText,
+    this.focusNode,
+    this.onFieldSubmitted,
   }) : super(key: key);
 
   @override
@@ -41,10 +47,11 @@ class BaseAuthTextField extends StatelessWidget {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
       controller: controller,
-      onSaved: (value) => controller
-        ..text = value.trim(),
-      validator: Validator.validatePassword,
+      onSaved: (value) => controller..text = value.trim(),
+      validator: validator,
       onEditingComplete: onEditingComplete,
+      onFieldSubmitted: onFieldSubmitted,
+      focusNode: focusNode ?? null,
     );
   }
 }

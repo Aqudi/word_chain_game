@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:wordchaingame/constants.dart';
 import 'package:wordchaingame/providers/firebase_auth_provider.dart';
+import 'package:wordchaingame/utils/utils.dart';
 import 'package:wordchaingame/validator.dart';
 import 'package:wordchaingame/widgets/auth/base_auth_button.dart';
 import 'package:wordchaingame/widgets/auth/base_auth_textfield.dart';
@@ -22,6 +23,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmController = TextEditingController();
+
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _passwordConfirmFocusNode = FocusNode();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -82,6 +87,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             hintText: "exmaple@example.com",
             controller: _emailController,
             validator: Validator.validateEmail,
+            focusNode: _emailFocusNode,
+            onFieldSubmitted: (_) => FieldUtils.fieldFocusChange(
+                context, _emailFocusNode, _passwordFocusNode),
           ),
           widget.betweenFieldSizedBox,
           BaseAuthTextField(
@@ -92,6 +100,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             hintText: "password",
             controller: _passwordController,
             validator: Validator.validatePassword,
+            focusNode: _passwordFocusNode,
+            onFieldSubmitted: (_) => FieldUtils.fieldFocusChange(
+                context, _passwordFocusNode, _passwordConfirmFocusNode),
           ),
           widget.betweenFieldSizedBox,
           BaseAuthTextField(
@@ -101,11 +112,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             prefixIcon: Icon(Icons.lock),
             hintText: "confirm password",
             controller: _passwordController,
-            validator: (_) {
-              Validator.validateConfirmPassword(
-                  _passwordController.text, _passwordConfirmController.text);
-            },
+            validator: (_) => Validator.validateConfirmPassword(
+                _passwordController.text, _passwordConfirmController.text),
             onEditingComplete: () async => await _handleSignUp(),
+            focusNode: _passwordConfirmFocusNode,
           ),
           widget.betweenFieldSizedBox,
           BaseAuthButton(
