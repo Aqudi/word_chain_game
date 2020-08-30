@@ -18,10 +18,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("대기방"),
-          centerTitle: true,
+        centerTitle: true,
         actions: <Widget>[
           FlatButton(
-            child: Text("로그아웃", style: TextStyle(color: Colors.black),),
+            child: Text(
+              "로그아웃",
+              style: TextStyle(color: Colors.black),
+            ),
             onPressed: () => _auth.signOut(),
           ),
           Text("Hello"),
@@ -30,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: Container(
           width: MediaQuery.of(context).size.width / 2,
-          child:Material(
+          child: Material(
             elevation: 5.0,
             borderRadius: BorderRadius.circular(30.0),
             color: Colors.blueGrey,

@@ -28,8 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   FirebaseAuthProvider _auth;
 
-  FirebaseUser user;
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -40,7 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     _auth = Provider.of<FirebaseAuthProvider>(context);
-    user = _auth.user;
 
     return Scaffold(
       appBar: AppBar(

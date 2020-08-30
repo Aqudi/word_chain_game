@@ -15,10 +15,22 @@ class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
     _auth = Provider.of<FirebaseAuthProvider>(context);
-    print("Auth loggedIn : ${_auth.loggedIn}");
-    if (_auth.loggedIn) {
-      return HomeScreen();
+
+    print("Auth loggedIn : ${_auth.status}");
+    switch (_auth.status) {
+      case AuthStatus.LOGGED_IN:
+        print("logged in");
+        return HomeScreen();
+      case AuthStatus.NOT_LOGGED_IN:
+        print("not logged in");
+        return LoginScreen();
+      default:
+        print("logged in");
+        return Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
     }
-    return LoginScreen();
   }
 }
