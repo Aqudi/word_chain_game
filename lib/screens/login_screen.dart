@@ -121,7 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Color(0xff6bceff),
                   ),
                 ),
-                onTap: () => Navigator.pushNamed(context, signupRoute),
+                onTap: () =>
+                    Navigator.pushReplacementNamed(context, signupRoute),
               ),
             ],
           ),
