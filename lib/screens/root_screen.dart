@@ -11,6 +11,7 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> {
   FirebaseAuthProvider _auth;
+  Widget _currentScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +21,24 @@ class _RootScreenState extends State<RootScreen> {
     switch (_auth.status) {
       case AuthStatus.LOGGED_IN:
         print("logged in");
-        return HomeScreen();
+        _currentScreen = HomeScreen();
+        break;
       case AuthStatus.NOT_LOGGED_IN:
         print("not logged in");
-        return LoginScreen();
+        _currentScreen = LoginScreen();
+        break;
       default:
         print("logged in");
-        return Scaffold(
+        _currentScreen = Scaffold(
           body: Center(
             child: CircularProgressIndicator(),
           ),
         );
     }
+
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 500),
+      child: _currentScreen,
+    );
   }
 }
